@@ -6,6 +6,7 @@ import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Search, X } from 'lucide-react';
+import { areaFeelOptions, toiletCongestionOptions, stationDistanceOptions, cigaretteSmellOptions, booleanOptions } from '@/lib/constants/formOptions';
 
 interface StoreFiltersProps {
   filters: StoreFiltersType;
@@ -15,35 +16,6 @@ interface StoreFiltersProps {
 }
 
 export function StoreFilters({ filters, onFiltersChange, sortByDistance, onSortByDistanceChange }: StoreFiltersProps) {
-  const areaFeelOptions = [
-    { value: 'large', label: '広い' },
-    { value: 'medium', label: '普通' },
-    { value: 'small', label: '狭い' },
-  ];
-
-  const toiletCongestionOptions = [
-    { value: 'low', label: '空いてる' },
-    { value: 'medium', label: '普通' },
-    { value: 'high', label: '混んでる' },
-  ];
-
-  const cigaretteSmellOptions = [
-    { value: 'none', label: 'なし' },
-    { value: 'light', label: '軽い' },
-    { value: 'medium', label: '中程度' },
-    { value: 'heavy', label: '強い' },
-  ];
-
-  const stationDistanceOptions = [
-    { value: 'near', label: '近い' },
-    { value: 'medium', label: '普通' },
-    { value: 'far', label: '遠い' },
-  ];
-
-  const booleanOptions = [
-    { value: 'true', label: 'あり' },
-    { value: 'false', label: 'なし' },
-  ];
 
   const handleFilterChange = (key: keyof StoreFiltersType, value: any) => {
     onFiltersChange({
@@ -61,7 +33,7 @@ export function StoreFilters({ filters, onFiltersChange, sortByDistance, onSortB
   );
 
   return (
-    <Card className="mb-6">
+    <Card className="mb-6 bg-white/90 backdrop-blur-xl border-white/20">
       <CardContent className="pt-6">
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -113,7 +85,7 @@ export function StoreFilters({ filters, onFiltersChange, sortByDistance, onSortB
                 id="sortByDistance"
                 checked={sortByDistance}
                 onChange={(e) => onSortByDistanceChange(e.target.checked)}
-                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                className="w-4 h-4 text-green-700 border-gray-300 rounded focus:ring-green-700"
               />
               <label
                 htmlFor="sortByDistance"

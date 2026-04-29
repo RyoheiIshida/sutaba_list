@@ -8,6 +8,7 @@ import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader } from '@/components/ui/Card';
 import { Upload, X, MapPin } from 'lucide-react';
+import { areaFeelOptions, toiletCongestionOptions, stationDistanceOptions, cigaretteSmellOptions, booleanOptions } from '@/lib/constants/formOptions';
 
 interface StoreFormProps {
   store?: Store;
@@ -115,36 +116,6 @@ export function StoreForm({ store, onSubmit, isSubmitting = false }: StoreFormPr
       }
     }
   };
-
-  const areaFeelOptions = [
-    { value: 'large', label: '広い' },
-    { value: 'medium', label: '普通' },
-    { value: 'small', label: '狭い' },
-  ];
-
-  const toiletCongestionOptions = [
-    { value: 'low', label: '空いてる' },
-    { value: 'medium', label: '普通' },
-    { value: 'high', label: '混んでる' },
-  ];
-
-  const stationDistanceOptions = [
-    { value: 'near', label: '近い' },
-    { value: 'medium', label: '普通' },
-    { value: 'far', label: '遠い' },
-  ];
-
-  const cigaretteSmellOptions = [
-    { value: 'none', label: 'なし' },
-    { value: 'light', label: '軽い' },
-    { value: 'medium', label: '中程度' },
-    { value: 'heavy', label: '強い' },
-  ];
-
-  const booleanOptions = [
-    { value: 'true', label: 'あり' },
-    { value: 'false', label: 'なし' },
-  ];
 
   return (
     <Card>
