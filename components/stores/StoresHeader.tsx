@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/Button';
 import { Coffee, Map as MapIcon, List, Navigation, Plus } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/useAuth';
 
 interface StoresHeaderProps {
   viewType: 'map' | 'list';
@@ -9,6 +10,8 @@ interface StoresHeaderProps {
 }
 
 export function StoresHeader({ viewType, onViewTypeChange, onGetCurrentLocation }: StoresHeaderProps) {
+  const { isAdmin } = useAuth();
+
   return (
     <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl shadow-gray-200/50 p-6 mb-8 border border-white/20">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
@@ -63,12 +66,14 @@ export function StoresHeader({ viewType, onViewTypeChange, onGetCurrentLocation 
             現在地
           </Button>
 
-          <Link href="/stores/new">
-            <Button variant="primary" size="md">
-              <Plus className="w-4 h-4 mr-2" />
-              新規店舗を登録
-            </Button>
-          </Link>
+          {isAdmin && (
+            <Link href="/stores/new">
+              <Button variant="primary" size="md">
+                <Plus className="w-4 h-4 mr-2" />
+                新規店舗を登録
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </div>

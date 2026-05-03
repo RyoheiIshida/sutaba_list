@@ -1,7 +1,11 @@
+'use client';
+
 import Link from "next/link";
 import { Coffee } from "lucide-react";
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Home() {
+  const { isAdmin } = useAuth();
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-green-50 via-green-100 to-green-200 dark:from-gray-900 dark:via-green-950 dark:to-gray-900">
       {/* Background decoration */}
@@ -49,16 +53,18 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-green-700 to-green-800 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
           </Link>
-          <Link href="/stores/new">
-            <button className="group relative px-8 py-4 bg-white/80 backdrop-blur-sm text-gray-900 rounded-2xl font-semibold border-2 border-gray-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 hover:border-green-700">
-              <span className="relative z-10 flex items-center">
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                新規店舗を登録
-              </span>
-            </button>
-          </Link>
+          {isAdmin && (
+            <Link href="/stores/new">
+              <button className="group relative px-8 py-4 bg-white/80 backdrop-blur-sm text-gray-900 rounded-2xl font-semibold border-2 border-gray-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 hover:border-green-700">
+                <span className="relative z-10 flex items-center">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  新規店舗を登録
+                </span>
+              </button>
+            </Link>
+          )}
         </div>
       </div>
     </div>

@@ -1,5 +1,8 @@
+import 'dotenv/config';
 import { initDb } from './sqlite';
 import { StoreRepository } from './store-repository';
+import { UserRepository } from '@/lib/auth/user-repository';
+import { hashPassword } from '@/lib/auth/password-utils';
 
 const sampleStores = [
   {
@@ -89,23 +92,48 @@ const sampleStores = [
   },
 ];
 
-export function seedDatabase() {
-  const db = initDb();
-  const repo = new StoreRepository();
+export async function seedDatabase() {
+  console.log('データベースのシードを開始します...');
 
-  const existingStores = repo.findAll();
-  if (existingStores.length > 0) {
-    console.log('データベースには既にデータが存在します');
-    return;
+  const db = initDb();
+  const storeRepo = new StoreRepository();
+  const userRepo = new UserRepository();
+
+  // 店舗データのシード
+  const existingStores = storeRepo.findAll();
+  if (existingStores.length === 0) {
+    sampleStores.forEach((store) => {
+      storeRepo.create(store);
+    });
+    console.log(`${sampleStores.length}件のサンプル店舗データを挿入しました`);
+  } else {
+    console.log('店舗データは既に存在します');
   }
 
-  sampleStores.forEach((store) => {
-    repo.create(store);
-  });
+  // 管理者ユーザーのシード
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'changeme123';
+  const adminName = '管理者';
 
-  console.log(`${sampleStores.length}件のサンプルデータを挿入しました`);
+  console.log(`管理者ユーザーの確認中: ${adminEmail}`);
+
+  const existingAdmin = userRepo.findByEmail(adminEmail);
+  if (!existingAdmin) {
+    console.log('管理者ユーザーを作成します...');
+    const hashedPassword = await hashPassword(adminPassword);
+    userRepo.create({
+      email: adminEmail,
+      password: hashedPassword,
+      name: adminName,
+      role: 'admin',
+    });
+    console.log(`管理者ユーザーを作成しました: ${adminEmail}`);
+    console.log(`パスワード: ${adminPassword}`);
+  } else {
+    console.log('管理者ユーザーは既に存在します');
+  }
+
+  console.log('データベースのシードが完了しました');
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  seedDatabase();
-}
+seedDatabase().catch(console.error);

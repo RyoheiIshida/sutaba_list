@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { initDb } from '@/lib/db/sqlite';
 import { StoreRepository } from '@/lib/db/store-repository';
 import { updateStoreSchema } from '@/lib/utils/validation';
+import { auth } from '@/lib/auth/config';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,6 +42,15 @@ export async function PUT(
     const { id } = await params;
     const db = initDb();
     const repo = new StoreRepository();
+
+    // 追加の認証チェック（ミドルウェアのバックアップ）
+    const session = await auth();
+    if (!session || !session.user || (session.user as any).role !== 'admin') {
+      return NextResponse.json(
+        { error: '管理者権限が必要です' },
+        { status: 403 }
+      );
+    }
 
     const body = await request.json();
 
@@ -97,6 +107,15 @@ export async function DELETE(
     const { id } = await params;
     const db = initDb();
     const repo = new StoreRepository();
+
+    // 追加の認証チェック（ミドルウェアのバックアップ）
+    const session = await auth();
+    if (!session || !session.user || (session.user as any).role !== 'admin') {
+      return NextResponse.json(
+        { error: '管理者権限が必要です' },
+        { status: 403 }
+      );
+    }
 
     const deleted = repo.delete(parseInt(id));
 

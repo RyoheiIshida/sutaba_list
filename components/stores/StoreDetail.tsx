@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { MapPin, Phone, Clock, Zap, Droplets, Wind, Edit, Trash2, Star, Navigation } from 'lucide-react';
 import Link from 'next/link';
 import { areaFeelLabels, toiletCongestionLabels, stationDistanceLabels, cigaretteSmellLabels } from '@/lib/constants/storeLabels';
+import { useAuth } from '@/hooks/useAuth';
 
 interface StoreDetailProps {
   store: Store;
@@ -12,6 +13,8 @@ interface StoreDetailProps {
 }
 
 export function StoreDetail({ store, onDelete, isDeleting = false }: StoreDetailProps) {
+  const { isAdmin } = useAuth();
+
   return (
     <div className="space-y-6">
       <Card className="bg-white/90 backdrop-blur-xl border-white/20">
@@ -34,26 +37,28 @@ export function StoreDetail({ store, onDelete, isDeleting = false }: StoreDetail
                 <span className="text-sm font-medium">{store.address}</span>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Link href={`/stores/${store.id}/edit`}>
-                <Button variant="secondary" size="md" className="shadow-md">
-                  <Edit className="w-4 h-4 mr-2" />
-                  編集
-                </Button>
-              </Link>
-              {onDelete && (
-                <Button
-                  variant="danger"
-                  size="md"
-                  onClick={onDelete}
-                  disabled={isDeleting}
-                  className="shadow-lg shadow-red-500/20"
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  {isDeleting ? '削除中...' : '削除'}
-                </Button>
-              )}
-            </div>
+            {isAdmin && (
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Link href={`/stores/${store.id}/edit`}>
+                  <Button variant="secondary" size="md" className="shadow-md">
+                    <Edit className="w-4 h-4 mr-2" />
+                    編集
+                  </Button>
+                </Link>
+                {onDelete && (
+                  <Button
+                    variant="danger"
+                    size="md"
+                    onClick={onDelete}
+                    disabled={isDeleting}
+                    className="shadow-lg shadow-red-500/20"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    {isDeleting ? '削除中...' : '削除'}
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         </CardHeader>
         <CardContent className="space-y-8">

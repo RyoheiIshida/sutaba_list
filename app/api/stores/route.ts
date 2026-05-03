@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { initDb } from '@/lib/db/sqlite';
 import { StoreRepository, StoreFilters } from '@/lib/db/store-repository';
 import { createStoreSchema, storeFiltersSchema } from '@/lib/utils/validation';
+import { auth } from '@/lib/auth/config';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,6 +51,15 @@ export async function POST(request: NextRequest) {
   try {
     const db = initDb();
     const repo = new StoreRepository();
+
+    // 追加の認証チェック（ミドルウェアのバックアップ）
+    const session = await auth();
+    if (!session || !session.user || (session.user as any).role !== 'admin') {
+      return NextResponse.json(
+        { error: '管理者権限が必要です' },
+        { status: 403 }
+      );
+    }
 
     const body = await request.json();
 
