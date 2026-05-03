@@ -26,6 +26,7 @@ export function StoreMap({
   const mapRef = useRef<HTMLDivElement>(null);
   const mapRefInstance = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
+  const hasInitializedBoundsRef = useRef(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [initMapFunction, setInitMapFunction] = useState<(() => void) | null>(null);
@@ -206,17 +207,13 @@ export function StoreMap({
         bounds.extend(position);
       });
 
-      map.fitBounds(bounds);
+      if (!hasInitializedBoundsRef.current) {
+        map.fitBounds(bounds);
 
-      if (validStores.length === 1) {
-        map.setZoom(15);
-      } else {
-        const listener = window.google.maps.event.addListener(map, 'bounds_changed', () => {
-          if (map.getZoom() && map.getZoom() > 15) {
-            map.setZoom(15);
-          }
-          window.google.maps.event.removeListener(listener);
-        });
+        if (validStores.length === 1) {
+          map.setZoom(15);
+        }
+        hasInitializedBoundsRef.current = true;
       }
     }
   }, [stores, isLoaded, onStoreClick]);
