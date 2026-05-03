@@ -20,7 +20,9 @@ export function initDb() {
       address TEXT NOT NULL,
       phone TEXT NOT NULL,
       business_hours TEXT NOT NULL,
-      access TEXT NOT NULL,
+      access TEXT,
+      train_lines TEXT,
+      stations TEXT,
       floor TEXT,
       area_feel TEXT,
       toilet_congestion TEXT,
@@ -35,6 +37,19 @@ export function initDb() {
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // カラムを追加（まだ存在しない場合）
+  try {
+    db.exec('ALTER TABLE stores ADD COLUMN train_lines TEXT');
+  } catch (e) {
+    // カラムが既に存在する場合は無視
+  }
+
+  try {
+    db.exec('ALTER TABLE stores ADD COLUMN stations TEXT');
+  } catch (e) {
+    // カラムが既に存在する場合は無視
+  }
 
   return db;
 }

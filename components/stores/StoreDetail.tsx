@@ -79,10 +79,46 @@ export function StoreDetail({ store, onDelete, isDeleting = false }: StoreDetail
                     </div>
                   </div>
                 </div>
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-4">
-                  <p className="text-xs font-semibold text-purple-600 mb-2">アクセス</p>
-                  <p className="text-gray-900 dark:text-white font-medium">{store.access}</p>
-                </div>
+                {(store.access || store.train_lines || store.stations) && (
+                  <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-4">
+                    <p className="text-xs font-semibold text-purple-600 mb-2">アクセス</p>
+                    {store.access && (
+                      <p className="text-gray-900 dark:text-white font-medium mb-3">{store.access}</p>
+                    )}
+                    <div className="space-y-2">
+                      {store.train_lines && (
+                        <div>
+                          <p className="text-xs text-purple-600 mb-1">路線</p>
+                          <div className="flex flex-wrap gap-2">
+                            {JSON.parse(store.train_lines).map((line: string, index: number) => (
+                              <span
+                                key={`line-${index}`}
+                                className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 dark:from-blue-900 dark:to-blue-800 dark:text-blue-200"
+                              >
+                                {line}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {store.stations && (
+                        <div>
+                          <p className="text-xs text-purple-600 mb-1">駅</p>
+                          <div className="flex flex-wrap gap-2">
+                            {JSON.parse(store.stations).map((station: string, index: number) => (
+                              <span
+                                key={`station-${index}`}
+                                className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 dark:from-purple-900 dark:to-purple-800 dark:text-purple-200"
+                              >
+                                {station}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
                 {store.floor && (
                   <div className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-xl p-4">
                     <p className="text-xs font-semibold text-teal-600 mb-2">階数</p>

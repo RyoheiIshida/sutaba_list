@@ -46,10 +46,30 @@ export function StoreCard({ store, isSelected = false, onClick }: StoreCardProps
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-3">
-          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">アクセス</p>
-          <p className="text-sm text-gray-700 dark:text-gray-300">{store.access}</p>
-        </div>
+        {(store.access || store.train_lines || store.stations) && (
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-3">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">アクセス</p>
+            {store.access && <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{store.access}</p>}
+            <div className="flex flex-wrap gap-2">
+              {store.train_lines && JSON.parse(store.train_lines).map((line: string, index: number) => (
+                <span
+                  key={`line-${index}`}
+                  className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 dark:from-blue-900 dark:to-blue-800 dark:text-blue-200"
+                >
+                  {line}
+                </span>
+              ))}
+              {store.stations && JSON.parse(store.stations).map((station: string, index: number) => (
+                <span
+                  key={`station-${index}`}
+                  className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 dark:from-purple-900 dark:to-purple-800 dark:text-purple-200"
+                >
+                  {station}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {store.floor && (
           <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-3">

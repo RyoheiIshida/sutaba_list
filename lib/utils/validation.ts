@@ -3,9 +3,11 @@ import { z } from 'zod';
 export const createStoreSchema = z.object({
   name: z.string().min(1, '店舗名は必須です'),
   address: z.string().min(1, '住所は必須です'),
-  phone: z.string().min(1, '電話番号は必須です').regex(/^[0-9\-]+$/, '電話番号の形式が正しくありません'),
+  phone: z.string().min(1, '電話番号は必須です').regex(/^[\d\-\s()（）+]+$/, '電話番号の形式が正しくありません（半角数字とハイフン、スペースのみ）'),
   business_hours: z.string().min(1, '営業時間は必須です'),
-  access: z.string().min(1, 'アクセス情報は必須です'),
+  access: z.string().optional(),
+  train_lines: z.array(z.string().min(1, '路線は空欄にできません')).optional(),
+  stations: z.array(z.string().min(1, '駅は空欄にできません')).optional(),
   floor: z.string().optional(),
   area_feel: z.enum(['large', 'medium', 'small']).optional(),
   toilet_congestion: z.enum(['low', 'medium', 'high']).optional(),

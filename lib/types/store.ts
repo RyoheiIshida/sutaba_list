@@ -4,7 +4,9 @@ export interface Store {
   address: string;
   phone: string;
   business_hours: string;
-  access: string;
+  access?: string | null;
+  train_lines?: string | null;
+  stations?: string | null;
   floor?: string | null;
   area_feel?: 'large' | 'medium' | 'small' | null;
   toilet_congestion?: 'low' | 'medium' | 'high' | null;
@@ -24,7 +26,9 @@ export interface CreateStoreInput {
   address: string;
   phone: string;
   business_hours: string;
-  access: string;
+  access?: string;
+  train_lines?: string[];
+  stations?: string[];
   floor?: string;
   area_feel?: 'large' | 'medium' | 'small';
   toilet_congestion?: 'low' | 'medium' | 'high';

@@ -7,13 +7,87 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader } from '@/components/ui/Card';
-import { Upload, X, MapPin } from 'lucide-react';
+import { Upload, X, MapPin, Plus } from 'lucide-react';
 import { areaFeelOptions, toiletCongestionOptions, stationDistanceOptions, cigaretteSmellOptions, booleanOptions } from '@/lib/constants/formOptions';
 
 interface StoreFormProps {
   store?: Store;
   onSubmit: (data: CreateStoreInput) => Promise<void>;
   isSubmitting?: boolean;
+}
+
+interface TagInputProps {
+  label: string;
+  tags: string[];
+  onAddTag: (tag: string) => void;
+  onRemoveTag: (index: number) => void;
+  placeholder?: string;
+}
+
+function TagInput({ label, tags, onAddTag, onRemoveTag, placeholder }: TagInputProps) {
+  const [input, setInput] = useState('');
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && input.trim()) {
+      e.preventDefault();
+      onAddTag(input.trim());
+      setInput('');
+    }
+  };
+
+  const handleAddClick = () => {
+    if (input.trim()) {
+      onAddTag(input.trim());
+      setInput('');
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      {label && (
+        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+          {label}
+        </label>
+      )}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-white/50 backdrop-blur-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-green-700/50 focus:border-green-700 transition-all duration-200 hover:border-gray-300"
+        />
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={handleAddClick}
+          disabled={!input.trim()}
+        >
+          <Plus className="w-4 h-4" />
+        </Button>
+      </div>
+      {tags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {tags.map((tag, index) => (
+            <span
+              key={index}
+              className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-gradient-to-r from-green-100 to-green-200 text-green-700 dark:from-green-900 dark:to-green-800 dark:text-green-200"
+            >
+              {tag}
+              <button
+                type="button"
+                onClick={() => onRemoveTag(index)}
+                className="ml-2 text-green-600 hover:text-green-800 dark:text-green-300 dark:hover:text-green-100"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function StoreForm({ store, onSubmit, isSubmitting = false }: StoreFormProps) {
@@ -24,6 +98,8 @@ export function StoreForm({ store, onSubmit, isSubmitting = false }: StoreFormPr
     phone: '',
     business_hours: '',
     access: '',
+    train_lines: [],
+    stations: [],
     floor: '',
     area_feel: undefined,
     toilet_congestion: undefined,
@@ -46,7 +122,9 @@ export function StoreForm({ store, onSubmit, isSubmitting = false }: StoreFormPr
         address: store.address,
         phone: store.phone,
         business_hours: store.business_hours,
-        access: store.access,
+        access: store.access || '',
+        train_lines: store.train_lines ? JSON.parse(store.train_lines) : [],
+        stations: store.stations ? JSON.parse(store.stations) : [],
         floor: store.floor || '',
         area_feel: store.area_feel || undefined,
         toilet_congestion: store.toilet_congestion || undefined,
@@ -61,12 +139,25 @@ export function StoreForm({ store, onSubmit, isSubmitting = false }: StoreFormPr
     }
   }, [store]);
 
+  const normalizePhoneNumber = (phone: string): string => {
+    return phone
+      .trim()
+      .replace(/[ー−―‑]/g, '-')
+      .replace(/[（）]/g, (c) => c === '（' ? '(' : ')')
+      .replace(/[\s　]+/g, ' ')
+      .replace(/\+81/, '0');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     try {
-      await onSubmit(formData);
+      const normalizedData = {
+        ...formData,
+        phone: normalizePhoneNumber(formData.phone),
+      };
+      await onSubmit(normalizedData);
       router.push('/stores');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'エラーが発生しました');
@@ -141,6 +232,7 @@ export function StoreForm({ store, onSubmit, isSubmitting = false }: StoreFormPr
             />
             <Input
               label="電話番号 *"
+              placeholder="例: 03-6271-1626"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               required
@@ -162,11 +254,36 @@ export function StoreForm({ store, onSubmit, isSubmitting = false }: StoreFormPr
           />
 
           <Input
-            label="アクセス *"
+            label="その他のアクセス情報"
             value={formData.access}
             onChange={(e) => setFormData({ ...formData, access: e.target.value })}
-            required
+            helperText="路線・駅以外のアクセス情報（オプション）"
           />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <TagInput
+              label="路線"
+              tags={formData.train_lines || []}
+              onAddTag={(tag) => setFormData({ ...formData, train_lines: [...(formData.train_lines || []), tag] })}
+              onRemoveTag={(index) => {
+                const newTags = [...(formData.train_lines || [])];
+                newTags.splice(index, 1);
+                setFormData({ ...formData, train_lines: newTags });
+              }}
+              placeholder="例: 山手線"
+            />
+            <TagInput
+              label="駅"
+              tags={formData.stations || []}
+              onAddTag={(tag) => setFormData({ ...formData, stations: [...(formData.stations || []), tag] })}
+              onRemoveTag={(index) => {
+                const newTags = [...(formData.stations || [])];
+                newTags.splice(index, 1);
+                setFormData({ ...formData, stations: newTags });
+              }}
+              placeholder="例: 東京駅"
+            />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Input

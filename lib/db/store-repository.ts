@@ -6,7 +6,9 @@ export interface Store {
   address: string;
   phone: string;
   business_hours: string;
-  access: string;
+  access?: string;
+  train_lines?: string;
+  stations?: string;
   floor?: string;
   area_feel?: 'large' | 'medium' | 'small';
   toilet_congestion?: 'low' | 'medium' | 'high';
@@ -87,10 +89,10 @@ export class StoreRepository {
   create(store: Omit<Store, 'id' | 'created_at' | 'updated_at'>): Store {
     const stmt = this.db.prepare(`
       INSERT INTO stores (
-        name, address, phone, business_hours, access, floor, area_feel,
+        name, address, phone, business_hours, access, train_lines, stations, floor, area_feel,
         toilet_congestion, map_image_url, has_power_outlet, latitude, longitude,
         station_distance, cigarette_smell, has_nearby_water
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const result = stmt.run(
@@ -98,7 +100,9 @@ export class StoreRepository {
       store.address,
       store.phone,
       store.business_hours,
-      store.access,
+      store.access || null,
+      store.train_lines || null,
+      store.stations || null,
       store.floor || null,
       store.area_feel || null,
       store.toilet_congestion || null,
@@ -123,6 +127,9 @@ export class StoreRepository {
         if (key === 'has_power_outlet' || key === 'has_nearby_water') {
           fields.push(`${key} = ?`);
           params.push(value ? 1 : 0);
+        } else if (key === 'train_lines' || key === 'stations') {
+          fields.push(`${key} = ?`);
+          params.push(Array.isArray(value) ? JSON.stringify(value) : value);
         } else {
           fields.push(`${key} = ?`);
           params.push(value);

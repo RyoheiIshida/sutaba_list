@@ -61,6 +61,8 @@ export async function POST(request: NextRequest) {
       phone: validatedData.phone,
       business_hours: validatedData.business_hours,
       access: validatedData.access,
+      train_lines: validatedData.train_lines ? JSON.stringify(validatedData.train_lines) : undefined,
+      stations: validatedData.stations ? JSON.stringify(validatedData.stations) : undefined,
       floor: validatedData.floor,
       area_feel: validatedData.area_feel,
       toilet_congestion: validatedData.toilet_congestion,
