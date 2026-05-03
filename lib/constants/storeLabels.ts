@@ -21,4 +21,5 @@ export const cigaretteSmellLabels = {
   light: '軽い',
   medium: '中程度',
   heavy: '強い',
+  to_way: '店舗までの道中がタバコ臭い',
 };

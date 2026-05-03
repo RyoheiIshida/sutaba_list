@@ -16,7 +16,7 @@ export const createStoreSchema = z.object({
   latitude: z.number().min(-90).max(90).optional(),
   longitude: z.number().min(-180).max(180).optional(),
   station_distance: z.enum(['near', 'medium', 'far']).optional(),
-  cigarette_smell: z.enum(['none', 'light', 'medium', 'heavy']).optional(),
+  cigarette_smell: z.enum(['none', 'light', 'medium', 'heavy', 'to_way']).optional(),
   has_nearby_water: z.boolean().optional(),
 });
 
@@ -27,7 +27,7 @@ export const storeFiltersSchema = z.object({
   hasPowerOutlet: z.boolean().optional(),
   toiletCongestion: z.enum(['low', 'medium', 'high']).optional(),
   areaFeel: z.enum(['large', 'medium', 'small']).optional(),
-  cigaretteSmell: z.enum(['none', 'light', 'medium', 'heavy']).optional(),
+  cigaretteSmell: z.enum(['none', 'light', 'medium', 'heavy', 'to_way']).optional(),
   hasNearbyWater: z.boolean().optional(),
   stationDistance: z.enum(['near', 'medium', 'far']).optional(),
 });

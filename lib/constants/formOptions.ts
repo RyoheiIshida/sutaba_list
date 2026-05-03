@@ -23,6 +23,7 @@ export const cigaretteSmellOptions = [
   { value: 'light', label: cigaretteSmellLabels.light },
   { value: 'medium', label: cigaretteSmellLabels.medium },
   { value: 'heavy', label: cigaretteSmellLabels.heavy },
+  { value: 'to_way', label: cigaretteSmellLabels.to_way },
 ];
 
 export const booleanOptions = [

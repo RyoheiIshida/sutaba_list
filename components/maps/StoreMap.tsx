@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Store } from '@/lib/types/store';
+import { cigaretteSmellLabels } from '@/lib/constants/storeLabels';
 
 declare global {
   var google: any;
@@ -184,7 +185,7 @@ export function StoreMap({
               <h3 class="font-bold text-lg">${store.name}</h3>
               <p class="text-sm text-gray-600">${store.address}</p>
               ${store.station_distance ? `<p class="text-sm mt-1">駅からの距離: ${store.station_distance === 'near' ? '近い' : store.station_distance === 'medium' ? '普通' : '遠い'}</p>` : ''}
-              ${store.cigarette_smell ? `<p class="text-sm">タバコ臭: ${store.cigarette_smell === 'none' ? 'なし' : store.cigarette_smell === 'light' ? '軽い' : store.cigarette_smell === 'medium' ? '中程度' : '強い'}</p>` : ''}
+              ${store.cigarette_smell ? `<p class="text-sm">タバコ臭: ${cigaretteSmellLabels[store.cigarette_smell as keyof typeof cigaretteSmellLabels] || store.cigarette_smell}</p>` : ''}
               ${store.has_nearby_water === 1 ? '<p class="text-sm text-green-600">✓ 水分補給スポットあり</p>' : ''}
               <a href="/stores/${store.id}" class="text-green-600 hover:text-green-700 font-semibold hover:underline mt-2 block">詳細を見る →</a>
             </div>

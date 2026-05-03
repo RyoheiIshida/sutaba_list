@@ -15,7 +15,7 @@ export interface Store {
   latitude?: number | null;
   longitude?: number | null;
   station_distance?: 'near' | 'medium' | 'far' | null;
-  cigarette_smell?: 'none' | 'light' | 'medium' | 'heavy' | null;
+  cigarette_smell?: 'none' | 'light' | 'medium' | 'heavy' | 'to_way' | null;
   has_nearby_water: number;
   created_at: string;
   updated_at: string;
@@ -37,7 +37,7 @@ export interface CreateStoreInput {
   latitude?: number;
   longitude?: number;
   station_distance?: 'near' | 'medium' | 'far';
-  cigarette_smell?: 'none' | 'light' | 'medium' | 'heavy';
+  cigarette_smell?: 'none' | 'light' | 'medium' | 'heavy' | 'to_way';
   has_nearby_water?: boolean;
 }
 
@@ -48,7 +48,7 @@ export interface StoreFilters {
   hasPowerOutlet?: boolean;
   toiletCongestion?: 'low' | 'medium' | 'high';
   areaFeel?: 'large' | 'medium' | 'small';
-  cigaretteSmell?: 'none' | 'light' | 'medium' | 'heavy';
+  cigaretteSmell?: 'none' | 'light' | 'medium' | 'heavy' | 'to_way';
   hasNearbyWater?: boolean;
   stationDistance?: 'near' | 'medium' | 'far';
 }
