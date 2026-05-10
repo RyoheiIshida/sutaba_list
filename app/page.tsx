@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { Coffee } from "lucide-react";
 import { useAuth } from '@/hooks/useAuth';
+import { signOut } from "next-auth/react";
 
 export default function Home() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, isAuthenticated } = useAuth();
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-green-50 via-green-100 to-green-200 dark:from-gray-900 dark:via-green-950 dark:to-gray-900">
       {/* Background decoration */}
@@ -64,6 +65,30 @@ export default function Home() {
                 </span>
               </button>
             </Link>
+          )}
+          {!isAuthenticated ? (
+            <Link href="/auth/signin">
+              <button className="group relative px-8 py-4 bg-white/80 backdrop-blur-sm text-gray-900 rounded-2xl font-semibold border-2 border-gray-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 hover:border-green-700">
+                <span className="relative z-10 flex items-center">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                  </svg>
+                  ログイン
+                </span>
+              </button>
+            </Link>
+          ) : (
+            <button 
+              onClick={() => signOut()}
+              className="group relative px-8 py-4 bg-white/80 backdrop-blur-sm text-gray-900 rounded-2xl font-semibold border-2 border-gray-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 hover:border-red-500 hover:text-red-600"
+            >
+              <span className="relative z-10 flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                ログアウト
+              </span>
+            </button>
           )}
         </div>
       </div>
