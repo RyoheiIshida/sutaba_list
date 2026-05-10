@@ -11,14 +11,14 @@ export interface User {
 }
 
 export interface SessionUser {
-  id: number;
+  id: string;
   email: string;
   name: string;
   role: UserRole;
 }
 
 export interface AuthUser {
-  id: number;
+  id: string;
   email: string;
   name: string;
   role: UserRole;
